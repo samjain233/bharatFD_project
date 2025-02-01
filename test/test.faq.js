@@ -18,13 +18,15 @@ describe("FAQ API Tests", () => {
    * ✅ Test GET /api/faqs
    */
   test("GET /api/faqs should return FAQs from cache if available", async () => {
-    const cachedData = JSON.stringify([{ question: "Test Q?", answer: "Test A" }]);
+    const cachedData = JSON.stringify([
+      { question: "Test Q?", answer: "Test A" },
+    ]);
 
     // Mock Redis cache
     redis.get.mockResolvedValueOnce(cachedData);
 
     const res = await request(app).get("/api/faqs");
-    
+
     expect(res.status).toBe(200);
     expect(redis.get).toHaveBeenCalledWith("faqs_en");
     expect(res.body).toEqual(JSON.parse(cachedData));
@@ -34,15 +36,20 @@ describe("FAQ API Tests", () => {
     redis.get.mockResolvedValueOnce(null);
 
     // Mock DB response
-    jest.spyOn(FAQ, "find").mockResolvedValueOnce([
-      { question: "DB Q?", answer: "DB A" }
-    ]);
+    jest
+      .spyOn(FAQ, "find")
+      .mockResolvedValueOnce([{ question: "DB Q?", answer: "DB A" }]);
 
     const res = await request(app).get("/api/faqs");
 
     expect(res.status).toBe(200);
     expect(FAQ.find).toHaveBeenCalled();
-    expect(redis.set).toHaveBeenCalledWith("faqs_en", expect.any(String), "EX", 3600);
+    expect(redis.set).toHaveBeenCalledWith(
+      "faqs_en",
+      expect.any(String),
+      "EX",
+      3600
+    );
     expect(res.body).toEqual([{ question: "DB Q?", answer: "DB A" }]);
   });
 
@@ -62,16 +69,21 @@ describe("FAQ API Tests", () => {
     // Mock DB save
     jest.spyOn(FAQ.prototype, "save").mockResolvedValueOnce({
       question: "New Q?",
-      answer: "New A"
+      answer: "New A",
     });
 
     const res = await request(app).post("/api/faqs").send({
       question: "New Q?",
-      answer: "New A"
+      answer: "New A",
     });
 
     expect(res.status).toBe(201);
     expect(res.body.message).toBe("FAQ added successfully!");
-    expect(redis.set).toHaveBeenCalledWith("faqs_en", expect.any(String), "EX", 3600);
+    expect(redis.set).toHaveBeenCalledWith(
+      "faqs_en",
+      expect.any(String),
+      "EX",
+      3600
+    );
   });
 });
