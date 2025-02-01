@@ -14,7 +14,6 @@ This is a **FAQ Management API** built using **Node.js, Express, and MongoDB**. 
 - **Database**: MongoDB
 - **Translation API**: Google Translate API
 - **Caching**: Redis
-- **Authentication**: (Optional, JWT can be implemented)
 
 ---
 
