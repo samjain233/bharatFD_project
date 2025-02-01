@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import connectDB from "./db/conn.js";
+import "./db/redisClient.js"
 
 connectDB();
 const app = express();
