@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import connectDB from "./db/conn.js";
-import "./db/redisClient.js"
+import "./db/redisClient.js";
 
 connectDB();
 const app = express();
@@ -12,7 +12,11 @@ import api from "./routes/api.route.js";
 app.use("/api", api);
 
 app.get("/", (req, res) => {
-  res.json({ hello: "sam" });
+  res.status(200).json({ server: "ok" });
+});
+
+app.all("*", (req, res) => {
+  res.status(404).send("404 not found");
 });
 
 const port = process.env.PORT || 3000;
